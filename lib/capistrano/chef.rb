@@ -29,9 +29,10 @@ module Capistrano::Chef
     configuration.load do
       def chef_role(name, query = '*:*', options = { })
         capistrano_chef.search_chef_nodes(query).each do |server|
-          attribute = options.delete(:attribute)
-          options.merge!(name_suffix: server.name.split("#{host_prefix}-").last) if exists? :host_prefix
-          role name, server[attribute], options
+          opts_clone = options.clone
+          attribute = opts_clone.delete(:attribute)
+          opts_clone.merge!(name_suffix: server.name.split("#{host_prefix}-").last) if exists? :host_prefix
+          role name, server[attribute], opts_clone
         end
 
       end
